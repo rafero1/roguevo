@@ -13,12 +13,16 @@ class Entity:
         self.spd = 0
         self.skills = []
 
-        self.tile = ' '
-        self.color = 0
-        self.bgcolor = 0
+        self.tile = 'Z'
+        self.color = (255, 255, 255)
+        self.bg = None
         self.px = 0
         self.py = 0
 
-        def attack(self, target, skill):
-            # Escolher abilidade -> atacar alvo.
-            pass
+    def move(self, dx, dy):
+        self.px += dx
+        self.py += dy
+
+    def attack(self, target, skill):
+        # Choose skill -> choose target.
+        pass
