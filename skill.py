@@ -1,6 +1,7 @@
-
-
 class Skill():
+    """
+    Skill class
+    """
     def __init__():
         self.name = ''
         self.attackType = ''

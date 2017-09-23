@@ -1,4 +1,7 @@
 class Entity:
+    """
+    Entity class for player and creatures
+    """
     def __init__(self):
         self.name = ''
         self.lvl = 0
@@ -10,7 +13,7 @@ class Entity:
         self.spd = 0
         self.skills = []
 
-        self.tile = '@'
+        self.tile = ' '
         self.color = 0
         self.bgcolor = 0
         self.px = 0

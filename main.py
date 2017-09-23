@@ -4,6 +4,7 @@ import random
 import tdl
 import sys
 from engine import Engine
+from input_handlers import handle_keys
 from soul import Soul
 from pc import PC
 
@@ -14,6 +15,7 @@ def main():
     tdl.set_font('consolas12x12_gs_tc.png', greyscale=True, altLayout=True)
 
     root_console = tdl.init(screen_width, screen_height, title='roguevo')
+    con = tdl.Console(screen_width, screen_height)
 
     engine = Engine()
     engine.gen_dungeon(5)
@@ -23,15 +25,17 @@ def main():
 
     # Console
     while not tdl.event.is_window_closed():
-        root_console.draw_char(pc.px, pc.py, pc.tile, bg=None)
+        con.draw_char(pc.px, pc.py, pc.tile, bg=None)
+        root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
         for entity in engine.dungeon[engine.current_level].entities:
-            root_console.draw_char(entity.px, entity.py, entity.tile, bg=None)
+            con.draw_char(entity.px, entity.py, entity.tile, bg=None)
+            root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
         tdl.flush()
 
         # Clean all console positions
         for y in range(screen_height):
             for x in range(screen_width):
-                root_console.draw_char(x, y, ' ', bg=None)
+                con.draw_char(x, y, ' ', bg=None)
 
         # Handle keys
         for event in tdl.event.get():
@@ -40,22 +44,29 @@ def main():
                 move(engine.dungeon[engine.current_level].entities)
                 break
 
+        # If no input matches KEYDOWN, set user_input to None
         else:
             user_input = None
 
+        # If there is no input, stop checking and go back to start
         if not user_input:
             continue
 
-        if user_input.key == 'ESCAPE':
+        action = handle_keys(user_input)
+        pmove = action.get('pmove')
+        quit = action.get('quit')
+        fullscreen = action.get('fullscreen')
+
+        if pmove:
+            dx, dy = pmove
+            pc.px += dx
+            pc.py += dy
+
+        if quit:
             return True
-        if user_input.key == 'UP':
-            pc.py += -1
-        if user_input.key == 'DOWN':
-            pc.py += 1
-        if user_input.key == 'LEFT':
-            pc.px += -1
-        if user_input.key == 'RIGHT':
-            pc.px += 1
+
+        if fullscreen:
+            tdl.set_fullscreen(not tdl.get_fullscreen())
 
 def move(entities):
     for entity in entities:

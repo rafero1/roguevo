@@ -4,6 +4,9 @@ from generators import gen_words
 
 
 class Level:
+    """
+    Dungeon level class
+    """
     ID = 0
     def __init__(self, name):
         Level.ID += 1

@@ -6,6 +6,10 @@ from level import Level
 
 
 class Engine():
+    """
+    Handle game variables and functions.
+    """
+
     first_time = False
     done = False
     dungeon = []
