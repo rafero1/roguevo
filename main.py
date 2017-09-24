@@ -8,15 +8,20 @@ from input_handlers import *
 from mapping import *
 from rendering import *
 from functions import *
+from logbox import *
 from soul import *
 from pc import *
 
 def main():
+    starting = True
     screen_width = 80
     screen_height = 60
     bar_width = 20
     panel_height = 15
     panel_y = screen_height - panel_height
+    message_x = bar_width + 2
+    message_width = screen_width - bar_width - 2
+    message_height = panel_height - 1
     map_width = 80
     map_height = 45
     room_max_size = 10
@@ -64,6 +69,10 @@ def main():
 
     make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_height, pc)
     fov_recompute = True
+    message_log = MessageLog(message_x, message_width, message_height)
+    if starting:
+        message_log.add_message(Message('Welcome to Hell'))
+        starting = False
 
     # Console
     while not tdl.event.is_window_closed():
@@ -71,7 +80,7 @@ def main():
             game_map.compute_fov(pc.px, pc.py, fov=fov_algorithm, radius=fov_radius, light_walls=fov_light_walls)
         draw_entity(con, pc, game_map.fov)
         root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
-        render_all(con, panel, engine.dungeon[0].entities, pc, game_map, fov_recompute, root_console, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
+        render_all(con, panel, engine.dungeon[0].entities, pc, game_map, fov_recompute, root_console, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
         tdl.flush()
 
         clear_all(con, engine.dungeon[engine.current_level].entities)
