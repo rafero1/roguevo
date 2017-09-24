@@ -14,6 +14,7 @@ from pc import *
 
 def main():
     starting = True
+    mouse_coordinates = (0, 0)
     screen_width = 80
     screen_height = 60
     bar_width = 20
@@ -93,6 +94,8 @@ def main():
                 user_input = event
                 move_enemies(engine.dungeon[engine.current_level].entities, game_map)
                 break
+            elif event.type == 'MOUSEMOTION':
+                mouse_coordinates = event.cell
 
         # If no input matches KEYDOWN, set user_input to None
         else:
