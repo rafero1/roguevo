@@ -6,6 +6,7 @@ class Entity:
         self.name = ''
         self.lvl = 0
         self.xp = 0
+        self.max_hp = 0
         self.hp = 0
         self.sp = 0
         self.ar = 0

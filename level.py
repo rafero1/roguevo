@@ -16,11 +16,11 @@ class Level:
         self.cleared = False
         self.entities = []
 
-    def populate(self, num):
-        amount = random.randint(2, num)
+    def populate(self, num, mx, my):
+        amount = random.randint(0, num)
         for number in range(amount):
             name = gen_words('name')
             beast = Creature(name)
-            beast.px = random.randint(0, 80)
-            beast.py = random.randint(0, 60)
+            beast.px = random.randint(0, mx)
+            beast.py = random.randint(0, my)
             self.entities.append(beast)
