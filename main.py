@@ -96,7 +96,7 @@ def main():
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
-                move_enemies(Game.dungeon[Game.current_level].entities, game_map)
+                move_enemies(Game.dungeon[0].entities, game_map, message_log, pc)
                 break
             elif event.type == 'MOUSEMOTION':
                 mouse_coordinates = event.cell
@@ -118,10 +118,17 @@ def main():
         # Player movement
         if pmove:
             dx, dy = pmove
-            if pc.px + dx < map_width and pc.py + dy < map_height:
-                if game_map.walkable[pc.px + dx, pc.py + dy]:
-                    pc.move(dx, dy)
-                    fov_recompute = True
+            fx = pc.px + dx
+            fy = pc.py + dy
+            if fx < map_width and fy < map_height:
+                if game_map.walkable[fx, fy]:
+                    target = get_entites_at(Game.dungeon[0].entities, fx, fy)
+                    if target:
+                        message_log.add_message(Message('Player attacks '+ target.name+ ' for'+ ' zero'+ ' damage'))
+                        pc.attack(target)
+                    else:
+                        pc.move(dx, dy)
+                        fov_recompute = True
 
         if quit:
             return True

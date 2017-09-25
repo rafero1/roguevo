@@ -15,7 +15,6 @@ class Creature(Entity):
         self.soul = ''
 
     def gen_stats(self):
-        self.name = gen_words('name')
         self.hp = random.randint(30, 50)
         self.ar = random.randint(5, 20)
 
