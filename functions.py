@@ -15,8 +15,9 @@ def move_enemies(entities, game_map, message_log, player):
 
             elif fx == player.px and fy == player.py:
                 target = player
-                entity.attack(target)
-                message_log.add_message(Message(entity.name+' attacks '+ target.name+ ' for'+ ' zero'+ ' damage'))
+                damage = entity.attack(target)
+                target.hp -= damage
+                message_log.add_message(Message(entity.name+' attacks '+ target.name+ ' for '+ str(damage) + ' damage'))
 
             else:
                 entity.move(dx, dy)

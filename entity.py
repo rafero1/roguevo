@@ -25,7 +25,8 @@ class Entity:
 
     def attack(self, target):
         # Choose skill -> choose target.
-        pass
+        damage = max(0, self.ar - target.df)
+        return damage
 
     def take_hit():
         pass

@@ -124,8 +124,9 @@ def main():
                 if game_map.walkable[fx, fy]:
                     target = get_entites_at(Game.dungeon[0].entities, fx, fy)
                     if target:
-                        message_log.add_message(Message('Player attacks '+ target.name+ ' for'+ ' zero'+ ' damage'))
-                        pc.attack(target)
+                        damage = pc.attack(target)
+                        target.hp -= damage
+                        message_log.add_message(Message('Player attacks '+ target.name+ ' for '+ str(damage) + ' damage'))
                     else:
                         pc.move(dx, dy)
                         fov_recompute = True
