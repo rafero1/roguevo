@@ -1,9 +1,11 @@
 from logbox import Message
 import random
+from tdl.map import AStar
 
 
 def move_enemies(entities, game_map, message_log, player):
     for entity in entities:
+        # AStar.get_path(entity.px, entity.py, player.px, player.py)
         dx = random.randint(-1,1)
         dy = random.randint(-1,1)
         fx = entity.px + dx

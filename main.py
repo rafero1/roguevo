@@ -3,6 +3,7 @@ import json
 import random
 import tdl
 import sys
+from enum import Enum, auto
 from engine import *
 from input_handlers import *
 from mapping import *
@@ -37,8 +38,8 @@ def main():
     colors = {
         'dark_wall': (0, 0, 100),
         'dark_ground': (50, 50, 100),
-        'light_wall': (130, 110, 50),
-        'light_ground': (200, 180, 50),
+        'light_wall': (130, 110, 150),
+        'light_ground': (200, 180, 150),
         'desaturated_green': (63, 127, 63),
         'darker_green': (0, 127, 0),
         'dark_red': (191, 0, 0),
@@ -68,6 +69,7 @@ def main():
     Game.gen_dungeon(5)
 
     pc = PC()
+    state = State.PLAYER_TURN
 
     Game.dungeon[0].rooms = make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_height, pc)
     Game.dungeon[0].populate()
@@ -92,12 +94,17 @@ def main():
 
         fov_recompute = False
 
+        if state == State.ENEMY_TURN:
+            move_enemies(Game.dungeon[0].entities, game_map, message_log, pc)
+            state = State.PLAYER_TURN
+
         # Handle events
         for event in tdl.event.get():
-            if event.type == 'KEYDOWN':
-                user_input = event
-                move_enemies(Game.dungeon[0].entities, game_map, message_log, pc)
-                break
+            if state == State.PLAYER_TURN:
+                if event.type == 'KEYDOWN':
+                    user_input = event
+                    state = State.ENEMY_TURN
+                    break
             elif event.type == 'MOUSEMOTION':
                 mouse_coordinates = event.cell
 
@@ -136,6 +143,10 @@ def main():
 
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
+
+class State(Enum):
+    PLAYER_TURN = auto()
+    ENEMY_TURN = auto()
 
 if __name__ == '__main__':
     main()

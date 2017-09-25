@@ -1,5 +1,7 @@
 # Engine class
 import random
+import json
+from enum import Enum, auto
 from creature import Creature
 from generators import gen_words
 from level import Level

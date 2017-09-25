@@ -23,6 +23,10 @@ class Entity:
         self.px += dx
         self.py += dy
 
+    def manage():
+        if self.hp <= 0:
+            self.death()
+
     def attack(self, target):
         # Choose skill -> choose target.
         damage = max(0, self.ar - target.df)
