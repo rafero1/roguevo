@@ -11,6 +11,7 @@ from functions import *
 from logbox import *
 from soul import *
 from pc import *
+import colors
 
 def main():
     starting = True
@@ -43,6 +44,7 @@ def main():
         'dark_red': (191, 0, 0),
         'white': (255, 255, 255),
         'black': (0, 0, 0),
+        'lighter_black': (25, 25, 25),
         'red': (255, 0, 0),
         'orange': (255, 127, 0),
         'light_red': (255, 114, 114),
@@ -62,37 +64,39 @@ def main():
     panel = tdl.Console(screen_width, panel_height)
     game_map =  game_map = GameMap(map_width, map_height)
 
-    engine = Engine()
-    engine.gen_dungeon(5)
+    Game = Engine()
+    Game.gen_dungeon(5)
 
     pc = PC()
-    pc.hp, pc.max_hp = 50, 50
 
-    make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_height, pc)
+    Game.dungeon[0].rooms = make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_height, pc)
+    Game.dungeon[0].populate()
     fov_recompute = True
     message_log = MessageLog(message_x, message_width, message_height)
     if starting:
         message_log.add_message(Message('Welcome to Hell'))
         starting = False
 
-    # Console
+    # Draw
     while not tdl.event.is_window_closed():
+        # Recompute Field of View when necessary
         if fov_recompute:
             game_map.compute_fov(pc.px, pc.py, fov=fov_algorithm, radius=fov_radius, light_walls=fov_light_walls)
-        draw_entity(con, pc, game_map.fov)
-        root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
-        render_all(con, panel, engine.dungeon[0].entities, pc, game_map, fov_recompute, root_console, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
+
+        # Render everything on screen
+        render_all(con, panel, Game.dungeon[0].entities, pc, game_map, fov_recompute, root_console, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
         tdl.flush()
 
-        clear_all(con, engine.dungeon[engine.current_level].entities)
-        clear_entity(con, pc)
+        # Clear all entities previous locations. Prevents ghost images
+        clear_all(con, Game.dungeon[0].entities, pc)
+
         fov_recompute = False
 
-        # Handle keys
+        # Handle events
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
-                move_enemies(engine.dungeon[engine.current_level].entities, game_map)
+                move_enemies(Game.dungeon[Game.current_level].entities, game_map)
                 break
             elif event.type == 'MOUSEMOTION':
                 mouse_coordinates = event.cell
@@ -105,11 +109,13 @@ def main():
         if not user_input:
             continue
 
+        # Input actions
         action = handle_keys(user_input)
         pmove = action.get('pmove')
         quit = action.get('quit')
         fullscreen = action.get('fullscreen')
 
+        # Player movement
         if pmove:
             dx, dy = pmove
             if pc.px + dx < map_width and pc.py + dy < map_height:

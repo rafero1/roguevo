@@ -10,6 +10,11 @@ class PC(Entity):
         super().__init__()
         self.tile = '@'
         self.soulstack = []
+        self.max_hp, self.hp = 50, 50
+        self.max_sp, self.sp = 50, 50
+        self.ar = 10
+        self.df = 10
+        self.spd = 5
 
     def absorb(self, soul):
         # Add soul to stack

@@ -21,7 +21,6 @@ class Engine():
             self.dungeon.append(Level(name))
             if amount == 0:
                 self.dungeon[0].active = True
-                # self.dungeon[0].populate(30, 80, 45)
 
     def manage_dungeon(self):
         num = 0
@@ -46,6 +45,5 @@ class Engine():
             if level.active:
                 level.active = False
                 self.dungeon[c + 1].active = True
-                self.dungeon[c + 1].populate(12)
                 break
             c += 1

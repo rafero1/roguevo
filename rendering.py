@@ -25,6 +25,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
     panel.draw_str(x_centered, y, text, fg=string_color, bg=None)
 
 def render_all(con, panel, entities, player, game_map, fov_recompute, root_console, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors):
+    # Draw map tiles
     if fov_recompute:
         for x, y in game_map:
             wall = not game_map.transparent[x, y]
@@ -37,6 +38,7 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
 
                 game_map.explored[x][y] = True
 
+            # If area was seen, draw this way
             elif game_map.explored[x][y]:
                 if wall:
                     con.draw_char(x, y, None, fg=None, bg=colors.get('dark_wall'))
@@ -44,11 +46,12 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
                     con.draw_char(x, y, None, fg=None, bg=colors.get('dark_ground'))
 
     # Draw all entities in the list onto console
+    draw_entity(con, player, game_map.fov)
     for entity in entities:
         draw_entity(con, entity, game_map.fov)
 
     root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
-    panel.clear(fg=colors.get('white'), bg=colors.get('black'))
+    panel.clear(fg=colors.get('white'), bg=colors.get('lighter_black'))
 
     # Print the game messages, one line at a time
     y = 1
@@ -58,13 +61,15 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
 
     render_bar(panel, 1, 1, bar_width, 'HP', player.hp, player.max_hp,
                colors.get('light_red'), colors.get('darker_red'), colors.get('white'))
+    render_bar(panel, 1, 2, bar_width, 'SP', player.sp, player.max_sp, colors.get('light_cyan'), colors.get('blue'), colors.get('black'))
 
     root_console.blit(panel, 0, panel_y, screen_width, panel_height, 0, 0)
 
-def clear_all(con, entities):
+def clear_all(con, entities, player):
     # Clear all entities in the list from console
     for entity in entities:
         clear_entity(con, entity)
+    clear_entity(con, player)
 
 def clear_screen(con, screen_width, screen_height):
     # Clean all console positions

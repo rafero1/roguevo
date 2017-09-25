@@ -4,17 +4,16 @@ class Entity:
     """
     def __init__(self):
         self.name = ''
-        self.lvl = 0
-        self.xp = 0
-        self.max_hp = 0
-        self.hp = 0
-        self.sp = 0
+        self.max_hp = 10
+        self.hp = self.max_hp
+        self.max_sp = 10
+        self.sp = self.max_sp
         self.ar = 0
         self.df = 0
         self.spd = 0
         self.skills = []
 
-        self.tile = 'Z'
+        self.tile = '?'
         self.color = (255, 255, 255)
         self.bg = None
         self.px = 0
