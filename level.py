@@ -25,6 +25,13 @@ class Level:
                 color = (random.randint(15, 255), random.randint(15, 255), random.randint(15, 255))
                 beast = Creature(name)
                 beast.color = color
-                beast.px = random.randint(room.x1 + 1, room.x2)
-                beast.py = random.randint(room.y1 + 1, room.y2)
+                beast.hp = random.randint(5,20)
+                beast.max_hp = beast.hp
+                beast.sp = random.randint(5,20)
+                beast.max_sp = beast.sp
+                beast.ar = random.randint(2,25)
+                beast.df = random.randint(2,25)
+                beast.spd = random.randint(2,25)
+                beast.px = random.randint(room.x1 + 1, room.x2 - 1)
+                beast.py = random.randint(room.y1 + 1, room.y2 - 1)
                 self.entities.append(beast)

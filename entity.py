@@ -23,6 +23,12 @@ class Entity:
         self.px += dx
         self.py += dy
 
-    def attack(self, target, skill):
+    def attack(self, target):
         # Choose skill -> choose target.
+        pass
+
+    def take_hit():
+        pass
+
+    def death():
         pass
