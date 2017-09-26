@@ -3,6 +3,9 @@ import textwrap
 
 class Message:
     def __init__(self, text, color=(255, 255, 255)):
+        """
+        Class for the messages.
+        """
         self.text = text
         self.color = color
 
@@ -15,6 +18,7 @@ class MessageLog:
         self.height = height
 
     def add_message(self, message):
+        # TODO: Make it so it accepts multiple differently colored messages
         # Split the message if necessary, among multiple lines
         new_msg_lines = textwrap.wrap(message.text, self.width)
 

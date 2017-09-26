@@ -61,7 +61,9 @@ def main():
     tdl.set_font('consolas12x12_gs_tc.png', greyscale=True, altLayout=True)
 
     root_console = tdl.init(screen_width, screen_height, title='roguevo')
+    # Gameplay screen
     con = tdl.Console(screen_width, screen_height)
+    # UI Panel
     panel = tdl.Console(screen_width, panel_height)
     game_map =  game_map = GameMap(map_width, map_height)
 
@@ -69,6 +71,8 @@ def main():
     Game.gen_dungeon(5)
 
     pc = PC()
+    # TODO: Include Player at first. Change Later
+    Game.dungeon[0].entities.append(pc)
     state = State.PLAYER_TURN
 
     Game.dungeon[0].rooms = make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_height, pc)

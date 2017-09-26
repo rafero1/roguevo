@@ -8,7 +8,6 @@ class PC(Entity):
     """
     def __init__(self):
         super().__init__()
-        self.is_pc = True
         self.name = 'Player'
         self.tile = '@'
         self.soulstack = []

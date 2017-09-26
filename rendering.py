@@ -46,7 +46,7 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
                     con.draw_char(x, y, None, fg=None, bg=colors.get('dark_ground'))
 
     # Draw all entities in the list onto console
-    draw_entity(con, player, game_map.fov)
+    # draw_entity(con, player, game_map.fov)
     for entity in entities:
         draw_entity(con, entity, game_map.fov)
 
@@ -69,7 +69,7 @@ def clear_all(con, entities, player):
     # Clear all entities in the list from console
     for entity in entities:
         clear_entity(con, entity)
-    clear_entity(con, player)
+    # clear_entity(con, player)
 
 def clear_screen(con, screen_width, screen_height):
     # Clean all console positions
