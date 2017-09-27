@@ -1,5 +1,7 @@
 import random
 from creature import Creature
+from components.combat import *
+from components.enemy_ai import *
 from generators import gen_words
 
 
@@ -18,24 +20,22 @@ class Level:
         self.entities = []
         self.rooms = []
 
-    def populate(self, min=0, max=5):
-        amount = random.randint(min, max)
+    def populate(self, min=0, max=10):
         for room in self.rooms:
+            amount = random.randint(min, max)
             for number in range(amount):
                 x = random.randint(room.x1 + 1, room.x2 - 1)
                 y = random.randint(room.y1 + 1, room.y2 - 1)
                 if not any([entity for entity in self.entities if entity.px == x and entity.py == y]):
                     name = gen_words('name')
                     color = (random.randint(25, 235), random.randint(25, 235), random.randint(25, 235))
-                    beast = Creature(name)
+                    hp = random.randint(5,20)
+                    sp = random.randint(5,20)
+                    ar = random.randint(2,10)
+                    df = random.randint(2,10)
+                    spd = random.randint(2,10)
+                    combat_component = Combat(hp=hp, sp=sp, ar=ar, df=df, spd=spd)
+                    ai_component = Basic()
+                    beast = Creature(x, y, name, combat=combat_component, ai=ai_component)
                     beast.color = color
-                    beast.hp = random.randint(5,20)
-                    beast.max_hp = beast.hp
-                    beast.sp = random.randint(5,20)
-                    beast.max_sp = beast.sp
-                    beast.ar = random.randint(2,25)
-                    beast.df = random.randint(2,25)
-                    beast.spd = random.randint(2,25)
-                    beast.px = x
-                    beast.py = y
                     self.entities.append(beast)

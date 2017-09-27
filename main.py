@@ -3,7 +3,9 @@ import json
 import random
 import tdl
 import sys
-from enum import Enum, auto
+from components.combat import *
+from components.enemy_ai import *
+from game_states import *
 from engine import *
 from input_handlers import *
 from mapping import *
@@ -58,21 +60,30 @@ def main():
         'light_pink': (255, 114, 184)
     }
 
+    # TDL init
     tdl.set_font('consolas12x12_gs_tc.png', greyscale=True, altLayout=True)
-
     root_console = tdl.init(screen_width, screen_height, title='roguevo')
+
     # Gameplay screen
     con = tdl.Console(screen_width, screen_height)
+
     # UI Panel
     panel = tdl.Console(screen_width, panel_height)
-    game_map =  game_map = GameMap(map_width, map_height)
 
+    # TODO: Change later. GameMap object and Engine Object
+    game_map =  game_map = GameMap(map_width, map_height)
     Game = Engine()
     Game.gen_dungeon(5)
+    entities = []
 
-    pc = PC()
+    # Player init
+    pc_combatant = Combat(hp=25, sp=25, ar=5, df=10, spd=10)
+    pc = PC(1, 1, 'Player', combat=pc_combatant)
+
     # TODO: Include Player at first. Change Later
-    Game.dungeon[0].entities.append(pc)
+    # Game.dungeon[0].entities.append(pc)
+    entities.append(pc)
+
     state = State.PLAYER_TURN
 
     Game.dungeon[0].rooms = make_map(game_map, max_rooms, room_min_size, room_max_size, map_width, map_height, pc)
@@ -83,6 +94,11 @@ def main():
         message_log.add_message(Message('Welcome to Hell'))
         starting = False
 
+    # TODO: Change later. Easy access for entity list
+    for entity in Game.dungeon[0].entities:
+        entities.append(entity)
+        print(entity.tile, entity.name, entity.px, entity.py)
+
     # Draw
     while not tdl.event.is_window_closed():
         # Recompute Field of View when necessary
@@ -90,25 +106,19 @@ def main():
             game_map.compute_fov(pc.px, pc.py, fov=fov_algorithm, radius=fov_radius, light_walls=fov_light_walls)
 
         # Render everything on screen
-        render_all(con, panel, Game.dungeon[0].entities, pc, game_map, fov_recompute, root_console, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
+        render_all(con, panel, entities, pc, game_map, fov_recompute, root_console, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
         tdl.flush()
 
         # Clear all entities previous locations. Prevents ghost images
-        clear_all(con, Game.dungeon[0].entities, pc)
+        clear_all(con, entities, pc)
 
         fov_recompute = False
 
-        if state == State.ENEMY_TURN:
-            move_enemies(Game.dungeon[0].entities, game_map, message_log, pc)
-            state = State.PLAYER_TURN
-
         # Handle events
         for event in tdl.event.get():
-            if state == State.PLAYER_TURN:
-                if event.type == 'KEYDOWN':
-                    user_input = event
-                    state = State.ENEMY_TURN
-                    break
+            if event.type == 'KEYDOWN':
+                user_input = event
+                break
             elif event.type == 'MOUSEMOTION':
                 mouse_coordinates = event.cell
 
@@ -125,22 +135,23 @@ def main():
         pmove = action.get('pmove')
         quit = action.get('quit')
         fullscreen = action.get('fullscreen')
+        player_turn_results = []
 
         # Player movement
-        if pmove:
+        if pmove and state == State.PLAYER_TURN:
             dx, dy = pmove
             fx = pc.px + dx
             fy = pc.py + dy
             if fx < map_width and fy < map_height:
                 if game_map.walkable[fx, fy]:
-                    target = get_entites_at(Game.dungeon[0].entities, fx, fy)
+                    target = get_blocking_entities_at(entities, fx, fy)
                     if target:
-                        damage = pc.attack(target)
-                        target.hp -= damage
-                        message_log.add_message(Message('Player attacks '+ target.name+ ' for '+ str(damage) + ' damage'))
+                        attack_results = pc.combat.attack(target)
+                        player_turn_results.extend(attack_results)
                     else:
                         pc.move(dx, dy)
                         fov_recompute = True
+                    state = State.ENEMY_TURN
 
         if quit:
             return True
@@ -148,9 +159,50 @@ def main():
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
 
-class State(Enum):
-    PLAYER_TURN = auto()
-    ENEMY_TURN = auto()
+        for player_turn_result in player_turn_results:
+            message = player_turn_result.get('message')
+            dead_entity = player_turn_result.get('dead')
+
+            if message:
+                message_log.add_message(message)
+
+            if dead_entity:
+                if dead_entity == pc:
+                    message = kill_player(dead_entity)
+                    state = State.PLAYER_DEAD
+
+                else:
+                    message = kill_monster(dead_entity)
+                message_log.add_message(message)
+
+        if state == State.ENEMY_TURN:
+            for entity in entities:
+                if entity.ai:
+                    enemy_turn_results = entity.ai.act(pc, game_map, entities)
+                    for enemy_turn_result in enemy_turn_results:
+                        message = enemy_turn_result.get('message')
+                        dead_entity = enemy_turn_result.get('dead')
+
+                        if message:
+                            message_log.add_message(message)
+
+                        if dead_entity:
+                            if dead_entity == pc:
+                                message = kill_player(dead_entity)
+                                state = State.PLAYER_DEAD
+
+                            else:
+                                message = kill_monster(dead_entity)
+
+                            message_log.add_message(message)
+
+                            if state == State.PLAYER_DEAD:
+                                break
+
+                    if state == State.PLAYER_DEAD:
+                        break
+            else:
+                state = State.PLAYER_TURN
 
 if __name__ == '__main__':
     main()

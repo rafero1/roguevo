@@ -59,9 +59,9 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
         panel.draw_str(message_log.x, y, message.text, bg=None, fg=message.color)
         y += 1
 
-    render_bar(panel, 1, 1, bar_width, 'HP', player.hp, player.max_hp,
+    render_bar(panel, 1, 1, bar_width, 'HP', player.combat.hp, player.combat.max_hp,
                colors.get('light_red'), colors.get('darker_red'), colors.get('white'))
-    render_bar(panel, 1, 2, bar_width, 'SP', player.sp, player.max_sp, colors.get('light_cyan'), colors.get('blue'), colors.get('black'))
+    render_bar(panel, 1, 2, bar_width, 'SP', player.combat.sp, player.combat.max_sp, colors.get('light_cyan'), colors.get('blue'), colors.get('black'))
 
     root_console.blit(panel, 0, panel_y, screen_width, panel_height, 0, 0)
 

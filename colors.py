@@ -20,3 +20,9 @@ colors = {
     'light_cyan': (114, 255, 255),
     'light_pink': (255, 114, 184)
 }
+
+def getColor(key):
+    colors.get(key)
+
+def getColors():
+    return colors
