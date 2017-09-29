@@ -10,6 +10,7 @@ class PC(Entity):
         super().__init__(x, y, name, combat=combat)
         self.tile = '@'
         self.soulstack = []
+        self.render_order = 0
 
     def absorb(self, soul):
         # Add soul to stack

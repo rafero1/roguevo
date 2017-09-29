@@ -1,4 +1,10 @@
 # coding=utf-8
+"""
+    TODO: Show monsters name and such
+    TODO: Progression system
+    TODO: Multiple dungeon levels
+    TODO: Custom dungeon generation algorithmn
+"""
 import json
 import random
 import tdl
@@ -14,7 +20,7 @@ from functions import *
 from logbox import *
 from soul import *
 from pc import *
-import colors
+from colors import getColors
 
 def main():
     starting = True
@@ -37,28 +43,7 @@ def main():
     fov_light_walls = True
     fov_radius = 10
 
-    colors = {
-        'dark_wall': (0, 0, 100),
-        'dark_ground': (50, 50, 100),
-        'light_wall': (130, 110, 150),
-        'light_ground': (200, 180, 150),
-        'desaturated_green': (63, 127, 63),
-        'darker_green': (0, 127, 0),
-        'dark_red': (191, 0, 0),
-        'white': (255, 255, 255),
-        'black': (0, 0, 0),
-        'lighter_black': (25, 25, 25),
-        'red': (255, 0, 0),
-        'orange': (255, 127, 0),
-        'light_red': (255, 114, 114),
-        'darker_red': (127, 0, 0),
-        'violet': (127, 0, 255),
-        'yellow': (255, 255, 0),
-        'blue': (0, 0, 255),
-        'green': (0, 255, 0),
-        'light_cyan': (114, 255, 255),
-        'light_pink': (255, 114, 184)
-    }
+    colors = getColors()
 
     # TDL init
     tdl.set_font('consolas12x12_gs_tc.png', greyscale=True, altLayout=True)

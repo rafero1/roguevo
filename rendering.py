@@ -18,7 +18,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
     if bar_width > 0:
         panel.draw_rect(x, y, bar_width, 1, None, bg=bar_color)
 
-    # Finally, some centered text with the values
+    # Text and values
     text = name + ': ' + str(value) + '/' + str(maximum)
     x_centered = x + int((total_width-len(text)) / 2)
 
@@ -47,7 +47,8 @@ def render_all(con, panel, entities, player, game_map, fov_recompute, root_conso
 
     # Draw all entities in the list onto console
     # draw_entity(con, player, game_map.fov)
-    for entity in entities:
+    sorted_entities = sorted(entities, key=lambda x: x.render_order, reverse=True)
+    for entity in sorted_entities:
         draw_entity(con, entity, game_map.fov)
 
     root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)

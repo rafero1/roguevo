@@ -14,6 +14,7 @@ class Entity:
         self.stopper = stopper
         self.px = x
         self.py = y
+        self.render_order = 1
 
         self.combat = combat
         self.ai = ai
