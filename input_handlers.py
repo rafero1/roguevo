@@ -23,6 +23,9 @@ def handle_keys(user_input):
 
     elif user_input.key == 'KP3':
         return {'pmove': (1, 1)}
+        
+    elif user_input.key == 'KP5':
+        return {'pmove': (0, 0)}
 
     # Fullscreen (Alt+Enter)
     if user_input.key == 'ENTER' and user_input.alt:
