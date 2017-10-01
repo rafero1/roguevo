@@ -5,7 +5,7 @@ class Combat:
     """
     Combat module for entities. Allows fighting.
     """
-    def __init__(self, hp, sp, ar, df, spd):
+    def __init__(self, hp, sp, ar, df, spd, skills):
         self.max_hp = hp
         self.hp = hp
         self.max_sp = sp
@@ -13,7 +13,7 @@ class Combat:
         self.ar = ar
         self.df = df
         self.spd = spd
-        self.skills = []
+        self.skills = skills
 
     def attack(self, target):
         result = []

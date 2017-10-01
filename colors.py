@@ -24,7 +24,7 @@ colors = {
 }
 
 def getColor(key):
-    colors.get(key)
+    return colors.get(key)
 
 def getColors():
     return colors

@@ -19,12 +19,15 @@ from functions import *
 from logbox import *
 from soul import *
 from pc import *
+from skill import *
 from colors import getColors
 
 def main():
 
     Game = Engine()
     colors = getColors()
+
+    show_upgd_menu = False
 
     # TDL init
     tdl.set_font(Game.font, greyscale=True, altLayout=True)
@@ -36,6 +39,9 @@ def main():
     # UI Panel
     panel = tdl.Console(Game.screen_width, Game.panel_height)
 
+    # Upgrade Screen
+    upgd = tdl.Console(Game.screen_width, Game.panel_height)
+
     # TODO: Change later. GameMap object and Engine Object
     game_map = GameMap(Game.map_width, Game.map_height)
 
@@ -43,7 +49,8 @@ def main():
     entities = []
 
     # Player init
-    pc_combatant = Combat(hp=25, sp=25, ar=5, df=10, spd=10)
+    pskills = [getSkill('punch')]
+    pc_combatant = Combat(hp=25, sp=25, ar=5, df=10, spd=10, skills=pskills)
     pc = PC(1, 1, 'Player', combat=pc_combatant)
 
     # TODO: Include Player at first. Change Later
@@ -53,7 +60,7 @@ def main():
     state = State.PLAYER_TURN
 
     Game.dungeon[0].rooms = make_map(game_map, Game.max_rooms, Game.room_min_size, Game.room_max_size, Game.map_width, Game.map_height, pc)
-    Game.dungeon[0].populate()
+    Game.dungeon[0].populate(1,2)
     fov_recompute = True
     message_log = MessageLog(Game.message_x, Game.message_width, Game.message_height)
     if Game.starting:
@@ -73,6 +80,20 @@ def main():
 
         # Render everything on screen
         render_all(con, panel, entities, pc, game_map, fov_recompute, root_console, message_log, Game, colors)
+        # -------------------------------
+
+
+        if show_upgd_menu:
+            upgd.clear(fg=colors.get('white'), bg=colors.get('lighter_black'))
+            upgd.draw_str(1, 1, 'Skill Window', bg=colors.get('lighter_black'))
+
+            y = 3
+            for skill in pc.combat.skills:
+                upgd.draw_str(1, y, skill.name, bg=colors.get('lighter_black'))
+                y += 1
+            root_console.blit(upgd, 1, 1, 30, 40, 0, 0)
+
+        # -------------------------------
         tdl.flush()
 
         # Clear all entities previous locations. Prevents ghost images
@@ -92,15 +113,17 @@ def main():
         else:
             user_input = None
 
-        # If there is no input, stop checking and go back to start
+        # If there is no input, continue checking. This means the game only continues if there's user input (Keypress).
         if not user_input:
             continue
 
         # Input actions
+
         action = handle_keys(user_input)
         pmove = action.get('pmove')
         quit = action.get('quit')
         fullscreen = action.get('fullscreen')
+        upgd_menu = action.get('upgd_menu')
 
         # Varible to hold results from player turn
         player_turn_results = []
@@ -126,6 +149,9 @@ def main():
 
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
+
+        if upgd_menu:
+            show_upgd_menu = not show_upgd_menu
 
         # Handle results form player turn
         for player_turn_result in player_turn_results:

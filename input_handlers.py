@@ -23,7 +23,7 @@ def handle_keys(user_input):
 
     elif user_input.key == 'KP3':
         return {'pmove': (1, 1)}
-        
+
     elif user_input.key == 'KP5':
         return {'pmove': (0, 0)}
 
@@ -34,6 +34,9 @@ def handle_keys(user_input):
     # Exit
     elif user_input.key == 'ESCAPE':
         return {'quit': True}
+
+    elif user_input.keychar == 'z':
+        return {'upgd_menu': True}
 
     # If nothing pressed, return nothing
     return {}

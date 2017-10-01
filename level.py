@@ -2,6 +2,7 @@ import random
 from creature import Creature
 from components.combat import *
 from components.enemy_ai import *
+from skill import *
 from generators import gen_words
 
 
@@ -34,7 +35,8 @@ class Level:
                     ar = random.randint(2,10)
                     df = random.randint(2,10)
                     spd = random.randint(2,10)
-                    combat_component = Combat(hp=hp, sp=sp, ar=ar, df=df, spd=spd)
+                    mskills = [getSkill('punch')]
+                    combat_component = Combat(hp=hp, sp=sp, ar=ar, df=df, spd=spd, skills=mskills)
                     ai_component = Basic()
                     beast = Creature(x, y, name, combat=combat_component, ai=ai_component)
                     beast.color = color
