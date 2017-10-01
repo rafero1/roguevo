@@ -5,21 +5,11 @@ from generators import gen_words
 
 
 class Creature(Entity):
-    def __init__(self, name):
-        super().__init__()
-        self.name = name
-        self.tile = name[:1].upper()
+    def __init__(self, x, y, name, combat, ai):
+        super().__init__(x, y, name, combat=combat, ai=ai)
         self.rank = 0
         self.race = ''
-        self.gen_stats()
-        self.soul = ''
+        self.soul = self.gen_soul()
 
-    def gen_stats(self):
-        self.name = gen_words('name')
-        self.hp = random.randint(30, 50)
-        self.ar = random.randint(5, 20)
-
-    def die(self, player):
-        print(self.name, 'morreu')
-        player.soulstack.append(self.soul)
-        print('got', self.name,"'s soul")
+    def gen_soul(self):
+        return Soul(self.name+ " soul")

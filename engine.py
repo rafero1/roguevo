@@ -1,5 +1,7 @@
 # Engine class
 import random
+import json
+from enum import Enum, auto
 from creature import Creature
 from generators import gen_words
 from level import Level
@@ -9,6 +11,29 @@ class Engine():
     """
     Handle game variables and functions.
     """
+
+    title = 'roguevo'
+    font = 'consolas12x12_gs_tc.png'
+    starting = True
+    
+    mouse_coordinates = (0, 0)
+    screen_width = 80
+    screen_height = 60
+    bar_width = 20
+    panel_height = 15
+    panel_y = screen_height - panel_height
+    message_x = bar_width + 2
+    message_width = screen_width - bar_width - 2
+    message_height = panel_height - 1
+    map_width = 80
+    map_height = 45
+    room_max_size = 10
+    room_min_size = 6
+    max_rooms = 30
+
+    fov_algorithm = 'BASIC'
+    fov_light_walls = True
+    fov_radius = 10
 
     first_time = False
     done = False
