@@ -8,3 +8,4 @@ class State(Enum):
     PLAYER_TURN = auto()
     ENEMY_TURN = auto()
     PLAYER_DEAD = auto()
+    PMENU_OPEN = auto()
