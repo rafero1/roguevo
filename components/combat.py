@@ -1,4 +1,5 @@
 from logbox import Message
+import random
 
 
 class Combat:
@@ -16,10 +17,15 @@ class Combat:
         self.skills = skills
 
     def attack(self, target):
+        skill = self.skills[random.randint(0,len(self.skills)-1)]
+
         result = []
-        damage = max(0, self.ar * int(self.spd * 0.3) - target.combat.df)
+        damage = max(0, skill.dmg + int(self.ar*0.5) * int(self.spd * 0.3) - target.combat.df)
         if damage > 0:
-            result.append({'message': Message('{0} strikes at {1} dealing {2} damage!'.format(self.owner.name.capitalize(), target.name, str(damage)))})
+            kwargs = { 'actor': self.owner.name.capitalize(), 'target': target.name, 'amount': str(damage) }
+            result.append({
+                'message': Message(skill.message.format(**kwargs))
+                })
             result.extend(target.combat.take_hit(damage))
         else:
             result.append({'message': Message('{0} tries to attack {1} but the damage is mitigated'.format(self.owner.name.capitalize(), target.name))})

@@ -3,6 +3,8 @@
     TODO: Progression system
     TODO: Multiple dungeon levels
     TODO: Custom dungeon generation algorithmn
+    TODO: Skill Window
+    TODO: Combat Revamp
 """
 import json
 import random
@@ -30,7 +32,7 @@ def main():
     show_upgd_menu = False
 
     # TDL init
-    tdl.set_font(Game.font, greyscale=True, altLayout=True)
+    tdl.set_font(Game.font, greyscale=Game.greyscale, altLayout=Game.altLayout)
     root_console = tdl.init(Game.screen_width, Game.screen_height, title=Game.title)
 
     # Gameplay screen
@@ -49,8 +51,8 @@ def main():
     entities = []
 
     # Player init
-    pskills = [getSkill('punch')]
-    pc_combatant = Combat(hp=25, sp=25, ar=5, df=10, spd=10, skills=pskills)
+    pskills = [getSkill('punch'), getSkill('kick'), getSkill('scratch')]
+    pc_combatant = Combat(hp=500, sp=100, ar=15, df=10, spd=15, skills=pskills)
     pc = PC(1, 1, 'Player', combat=pc_combatant)
 
     # TODO: Include Player at first. Change Later
@@ -84,14 +86,16 @@ def main():
 
 
         if show_upgd_menu:
-            upgd.clear(fg=colors.get('white'), bg=colors.get('lighter_black'))
-            upgd.draw_str(1, 1, 'Skill Window', bg=colors.get('lighter_black'))
+            upgd.clear(fg=colors.get('white'), bg=colors.get('black'))
+            upgd.draw_str(1, 1, 'Status')
 
-            y = 3
+            upgd.draw_str(1, 4, pc.name)
+
+            y = 8
             for skill in pc.combat.skills:
-                upgd.draw_str(1, y, skill.name, bg=colors.get('lighter_black'))
+                upgd.draw_str(1, y, skill.name)
                 y += 1
-            root_console.blit(upgd, 1, 1, 30, 40, 0, 0)
+            root_console.blit(upgd, 0, 0, Game.screen_width, Game.screen_height, 0, 0)
 
         # -------------------------------
         tdl.flush()
@@ -129,7 +133,7 @@ def main():
         player_turn_results = []
 
         # Player movement and controls
-        if pmove and state == State.PLAYER_TURN:
+        if pmove and state == State.PLAYER_TURN and not show_upgd_menu:
             dx, dy = pmove
             fx = pc.px + dx
             fy = pc.py + dy
@@ -171,7 +175,7 @@ def main():
                 message_log.add_message(message)
 
         # Handle enemy turn
-        if state == State.ENEMY_TURN:
+        if state == State.ENEMY_TURN and not show_upgd_menu:
             for entity in entities:
                 # Enemies act
                 if entity.ai:

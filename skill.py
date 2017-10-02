@@ -16,7 +16,9 @@ class Skill():
         self.requires = []
 
 skilltree = {
-    'punch': Skill('punch', 10, 0, Message(''))
+    'punch': Skill('Punch', 10, 0, '{actor} punches {target} dealing {amount} damage!'),
+    'kick': Skill('Kick', 16, 5, '{actor} kicks {target} dealing {amount} damage!'),
+    'scratch': Skill('Scratch', 12, 1, '{actor} claws {target} dealing {amount} damage!'),
 }
 
 def getSkill(key):

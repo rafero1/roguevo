@@ -13,9 +13,11 @@ class Engine():
     """
 
     title = 'roguevo'
-    font = 'consolas12x12_gs_tc.png'
+    font = 'terminal12x12_gs_ro.png'
+    altLayout = False
+    greyscale = True
     starting = True
-    
+
     mouse_coordinates = (0, 0)
     screen_width = 80
     screen_height = 60
@@ -27,13 +29,13 @@ class Engine():
     message_height = panel_height - 1
     map_width = 80
     map_height = 45
-    room_max_size = 10
-    room_min_size = 6
+    room_max_size = 40
+    room_min_size = 20
     max_rooms = 30
 
     fov_algorithm = 'BASIC'
     fov_light_walls = True
-    fov_radius = 10
+    fov_radius = 15
 
     first_time = False
     done = False
