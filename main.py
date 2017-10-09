@@ -24,6 +24,7 @@ from pc import *
 from skill import *
 from colors import getColors
 
+
 def main():
 
     Game = Engine()
@@ -87,14 +88,26 @@ def main():
 
         if show_upgd_menu:
             upgd.clear(fg=colors.get('white'), bg=colors.get('black'))
-            upgd.draw_str(1, 1, 'Status')
+            upgd.draw_str(1, 1, 'Status:')
+            upgd.draw_str(10, 1, pc.name)
 
-            upgd.draw_str(1, 4, pc.name)
-
+            upgd.draw_str(1, 6, 'Skills')
             y = 8
             for skill in pc.combat.skills:
-                upgd.draw_str(1, y, skill.name)
+                upgd.draw_str(1, y, ' -'+ skill.name)
                 y += 1
+
+            upgd.draw_str(20, 6, 'Souls:')
+            upgd.draw_str(28, 6, str(pc.soulstack))
+
+            """
+            upgd.draw_str(20, 6, 'Souls')
+            y = 8
+            for soul in pc.soulstack:
+                upgd.draw_str(20, y, ' -'+ soul.name)
+                y += 1
+            """
+
             root_console.blit(upgd, 0, 0, Game.screen_width, Game.screen_height, 0, 0)
 
         # -------------------------------
@@ -141,7 +154,9 @@ def main():
                 if game_map.walkable[fx, fy]:
                     target = get_blocking_entities_at(entities, fx, fy)
                     if target and target is not pc:
-                        attack_results = pc.combat.attack(target)
+                        skill = pc.combat.skills[random.randint(0,len(pc.combat.skills)-1)]
+
+                        attack_results = pc.combat.attack(target, skill)
                         player_turn_results.extend(attack_results)
                     else:
                         pc.move(dx, dy)
@@ -157,7 +172,7 @@ def main():
         if upgd_menu:
             show_upgd_menu = not show_upgd_menu
 
-        # Handle results form player turn
+        # Handle results from player turn
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
@@ -171,7 +186,8 @@ def main():
                     state = State.PLAYER_DEAD
 
                 else:
-                    message = kill_monster(dead_entity)
+                    message, soul = kill_monster(dead_entity)
+                    pc.absorb(soul)
                 message_log.add_message(message)
 
         # Handle enemy turn
@@ -195,7 +211,8 @@ def main():
                                 state = State.PLAYER_DEAD
 
                             else:
-                                message = kill_monster(dead_entity)
+                                message, soul = kill_monster(dead_entity)
+                                pc.absorb(soul)
 
                             message_log.add_message(message)
 

@@ -1,12 +1,16 @@
+import random
 
 
 class Basic:
     def act(self, target, game_map, entities):
+        actor = self.owner
         result = []
-        if game_map.fov[self.owner.px, self.owner.py]:
-            if self.owner.distance_to(target) >= 2:
-                self.owner.move_towards(target.px, target.py, game_map, entities)
+
+        if game_map.fov[actor.px, actor.py]:
+            if actor.distance_to(target) >= 2:
+                actor.move_towards(target.px, target.py, game_map, entities)
 
             elif target.combat.hp > 0:
-                result.extend(self.owner.combat.attack(target))
+                skill = actor.combat.skills[random.randint(0,len(actor.combat.skills)-1)]
+                result.extend(actor.combat.attack(target, skill))
         return result

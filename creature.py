@@ -9,7 +9,8 @@ class Creature(Entity):
         super().__init__(x, y, name, combat=combat, ai=ai)
         self.rank = 0
         self.race = ''
-        self.soul = self.gen_soul()
+        # self.soulv = self.gen_soul()
+        self.soulv = 1
 
     def gen_soul(self):
         return Soul(self.name+ " soul")
