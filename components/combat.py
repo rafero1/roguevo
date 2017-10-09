@@ -16,16 +16,26 @@ class Combat:
         self.spd = spd
         self.skills = skills
 
-    def attack(self, target):
-        skill = self.skills[random.randint(0,len(self.skills)-1)]
-
+    def attack(self, target, skill):
         result = []
         damage = max(0, skill.dmg + int(self.ar*0.5) * int(self.spd * 0.3) - target.combat.df)
+        kwargs = { 'actor': self.owner.name.capitalize(), 'target': target.name, 'amount': str(damage) }
+
         if damage > 0:
-            kwargs = { 'actor': self.owner.name.capitalize(), 'target': target.name, 'amount': str(damage) }
             result.append({
                 'message': Message(skill.message.format(**kwargs))
                 })
+
+            if random.randint(0,10) <= 2:
+                mx, my = self.owner.px, self.owner.py
+                tmx, tmy = target.px, target.py
+                fx, fy = 2, 2
+                if mx > tmx:
+                    fx = -fx
+                if my > tmy:
+                    fy = -fy
+                target.move(fx, fy)
+
             result.extend(target.combat.take_hit(damage))
         else:
             result.append({'message': Message('{0} tries to attack {1} but the damage is mitigated'.format(self.owner.name.capitalize(), target.name))})

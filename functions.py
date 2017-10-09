@@ -27,8 +27,8 @@ def kill_monster(monster):
     monster.char = '%'
     monster.color = colors.get('dark_red')
     monster.combat = None
-    monster.stopper = False
     monster.ai = None
+    monster.stopper = False
     monster.name = monster.name + ' corpse'
 
-    return death_message
+    return death_message, monster.soulv

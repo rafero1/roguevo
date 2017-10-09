@@ -30,11 +30,11 @@ class Level:
                 if not any([entity for entity in self.entities if entity.px == x and entity.py == y]):
                     name = gen_words('name')
                     color = (random.randint(25, 235), random.randint(25, 235), random.randint(25, 235))
-                    hp = random.randint(300,1000)
-                    sp = random.randint(70,300)
-                    ar = random.randint(10,10)
-                    df = random.randint(5,25)
-                    spd = random.randint(5,35)
+                    hp = random.randint(self.id*100,self.id*300)
+                    sp = random.randint(self.id*50,self.id*100)
+                    ar = random.randint(self.id*10,self.id*15)
+                    df = random.randint(self.id*10,self.id*15)
+                    spd = random.randint(self.id*10,self.id*15)
                     mskills = [getSkill('punch'), getSkill('kick'), getSkill('scratch')]
                     combat_component = Combat(hp=hp, sp=sp, ar=ar, df=df, spd=spd, skills=mskills)
                     ai_component = Basic()
